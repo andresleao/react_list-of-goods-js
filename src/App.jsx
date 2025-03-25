@@ -17,7 +17,7 @@ export const goodsFromServer = [
 ];
 
 const ALPHABETICALLY = 'alphabetically';
-const BY_LENGTH = 'byLenght';
+const BY_LENGTH = 'byLength';
 
 export const App = () => {
   const [sortedGoods, setSortedGoods] = useState([...goodsFromServer]);
@@ -28,8 +28,9 @@ export const App = () => {
     (item, index) => item === goodsFromServer[index],
   );
 
-  const applySorting = type => {
-    const sorted = [...goodsFromServer];
+  const handleSort = type => {
+    const source = sortType === '' ? [...goodsFromServer] : [...sortedGoods];
+    const sorted = [...source];
 
     if (type === ALPHABETICALLY) {
       sorted.sort((a, b) => a.localeCompare(b));
@@ -45,12 +46,12 @@ export const App = () => {
     setSortType(type);
   };
 
-  const reverseList = () => {
-    setSortedGoods(prevGoods => [...prevGoods].reverse());
+  const handleReverse = () => {
     setIsReversed(prev => !prev);
+    setSortedGoods(prev => [...prev].reverse());
   };
 
-  const resetList = () => {
+  const handleReset = () => {
     setSortedGoods([...goodsFromServer]);
     setSortType('');
     setIsReversed(false);
@@ -61,7 +62,7 @@ export const App = () => {
       <div className="buttons">
         <button
           type="button"
-          onClick={() => applySorting(ALPHABETICALLY)}
+          onClick={() => handleSort(ALPHABETICALLY)}
           className={cn('button', 'is-success', {
             'is-light': sortType !== ALPHABETICALLY,
           })}
@@ -71,7 +72,7 @@ export const App = () => {
 
         <button
           type="button"
-          onClick={() => applySorting(BY_LENGTH)}
+          onClick={() => handleSort(BY_LENGTH)}
           className={cn('button', 'is-success', {
             'is-light': sortType !== BY_LENGTH,
           })}
@@ -81,7 +82,7 @@ export const App = () => {
 
         <button
           type="button"
-          onClick={reverseList}
+          onClick={handleReverse}
           className={cn('button', 'is-success', {
             'is-light': !isReversed,
           })}
@@ -89,11 +90,11 @@ export const App = () => {
           Reverse
         </button>
 
-        {!isInitialOrder ? (
-          <button type="button" onClick={resetList} className="button">
+        {!isInitialOrder && (
+          <button type="button" onClick={handleReset} className="button">
             Reset
           </button>
-        ) : null}
+        )}
       </div>
 
       <ul>
